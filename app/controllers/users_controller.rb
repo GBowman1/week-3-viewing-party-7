@@ -7,21 +7,6 @@ class UsersController <ApplicationController
     @user = User.find(params[:id])
   end 
 
-  # def create 
-  #   user = User.create!(user_params)
-  #   # if user_params[:password] == user_params[:password_confirmation]
-  #     if user.save
-  #       redirect_to user_path(user)
-  #     else  
-  #       flash[:error] = user.errors.full_messages.to_sentence
-  #       redirect_to register_path
-  #     end 
-  #   # else
-  #     # flash[:error] = "Password confirmation doesn't match Password"
-  #     # redirect_to register_path
-  #   # end
-  # end 
-
   def create 
     begin 
       user = User.create!(user_params)
