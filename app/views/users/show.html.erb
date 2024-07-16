@@ -1,12 +1,20 @@
-<h2><%= @user.name %>'s Dashboard</h2>
+<% if @current_user %>
+    <h2><%= @user.name %>'s Dashboard</h2>
+    <% if cookies[:location] %>
+        <h3>Your Location: <%= cookies[:location] %></h3>
+    <% end %>
 
-<%= button_to "Find Top Rated Movies", movies_path(@user), method: :get %><br>
+    <%= button_to "Find Top Rated Movies", movies_path(@user), method: :get %><br>
 
-<h3>Viewing Parties:</h3>
+    <h3>Viewing Parties:</h3>
 
-<% @user.viewing_parties.each do |vp| %>
-    Title: <%= vp.movie.title %>
-    Duration: <%= vp.duration %>
-    Date: <%= vp.date %>
-    Time: <%= vp.time %>
+    <% @user.viewing_parties.each do |vp| %>
+        Title: <%= vp.movie.title %>
+        Duration: <%= vp.duration %>
+        Date: <%= vp.date %>
+        Time: <%= vp.time %>
+    <% end %>
+<% else %>
+    <h2> You must be logged in to view this page. </h2>
+    <%= button_to "Login", login_path, method: :get %>
 <% end %>

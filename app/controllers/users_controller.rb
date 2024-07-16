@@ -27,9 +27,8 @@ class UsersController <ApplicationController
     user = User.find_by(email: params[:email])
     if user.authenticate(params[:password])
       session[:user_id] = user.id
-      redirect_to user_path(user) # if user
-      # redirect_to admin_dashboard_path if user.admin?
-
+      cookies[:location] = params[:location]
+      redirect_to user_path(user)
     else 
       flash[:error] = "Invalid email or password"
       redirect_to login_path
