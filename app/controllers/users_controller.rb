@@ -10,6 +10,7 @@ class UsersController <ApplicationController
   def create 
     begin 
       user = User.create!(user_params)
+      session[:user_id] = user.id
       user.save
       redirect_to user_path(user)
     rescue ActiveRecord::RecordInvalid => e
@@ -25,7 +26,10 @@ class UsersController <ApplicationController
   def login_user
     user = User.find_by(email: params[:email])
     if user.authenticate(params[:password])
-      redirect_to user_path(user)
+      session[:user_id] = user.id
+      redirect_to user_path(user) # if user
+      # redirect_to admin_dashboard_path if user.admin?
+
     else 
       flash[:error] = "Invalid email or password"
       redirect_to login_path
@@ -37,4 +41,11 @@ class UsersController <ApplicationController
   def user_params 
     params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end 
+
+  def require_user
+    if !current_user
+      flash[:error] = "You must be logged in to view this page"
+      redirect_to root_path
+    end
+  end
 end 

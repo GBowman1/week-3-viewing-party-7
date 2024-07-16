@@ -41,4 +41,12 @@ RSpec.describe 'Login Page' do
     expect(current_path).to eq(login_path)
     expect(page).to have_content('Invalid email or password')
   end
+
+  it 'Cannont View a user dashboard unless logged in' do
+    user1 = User.create(name: "User One", email: "usone@aol.com", password: 'password123')
+
+    visit user_path(user1.id)
+
+    expect(page).to have_content('You must be logged in to view this page')
+  end
 end
