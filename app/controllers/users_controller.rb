@@ -1,4 +1,5 @@
-class UsersController <ApplicationController 
+class UsersController <ApplicationController
+  before_action :require_user, only: [:show]
   def new 
     @user = User.new()
   end 
@@ -11,6 +12,7 @@ class UsersController <ApplicationController
     begin 
       user = User.create!(user_params)
       session[:user_id] = user.id
+      # cookies.signed[:user_id] = {value: user.id, expires: 1.hour.from_now}
       user.save
       redirect_to user_path(user)
     rescue ActiveRecord::RecordInvalid => e
@@ -27,12 +29,18 @@ class UsersController <ApplicationController
     user = User.find_by(email: params[:email])
     if user.authenticate(params[:password])
       session[:user_id] = user.id
+      # cookies.signed[:user_id] = {value: user.id, expires: 1.hour.from_now}
       cookies[:location] = params[:location]
       redirect_to user_path(user)
     else 
       flash[:error] = "Invalid email or password"
       redirect_to login_path
     end
+  end
+
+  def logout
+    session[:user_id] = nil
+    redirect_to root_path
   end
 
   private 
@@ -43,6 +51,13 @@ class UsersController <ApplicationController
 
   def require_user
     if !current_user
+      flash[:error] = "You must be logged in to view this page"
+      redirect_to root_path
+    end
+  end
+
+  def require_user
+    unless @current_user
       flash[:error] = "You must be logged in to view this page"
       redirect_to root_path
     end

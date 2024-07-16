@@ -35,4 +35,13 @@ RSpec.describe 'Movies Index Page' do
     expect(page).to have_content(movie_1.description)
     expect(page).to have_content(movie_1.rating)
   end 
+
+  it "doesnt allow visitor to make a viewing party without logging in" do
+    visit movie_path(@user1.id, Movie.first.id)
+
+    click_button "Create a Viewing Party"
+
+    expect(current_path).to eq(movie_path(@user1.id, Movie.first.id))
+    expect(page).to have_content("You must be logged in to view this page")
+  end
 end

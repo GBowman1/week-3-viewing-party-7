@@ -26,6 +26,13 @@ RSpec.describe 'Landing Page' do
     user1 = User.create(name: "User One", email: "user1@test.com", password: "password123")
     user2 = User.create(name: "User Two", email: "user2@test.com", password: "password123")
 
+    visit login_path
+    fill_in :email, with: user1.email
+    fill_in :password, with: user1.password
+    click_button 'Login'
+
+    visit '/'
+
     expect(page).to have_content('Existing Users:')
 
     within('.existing-users') do 

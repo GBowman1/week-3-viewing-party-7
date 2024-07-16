@@ -56,4 +56,50 @@ RSpec.describe 'Login Page' do
     expect(current_path).to eq(user_path(user.id))
     expect(page).to have_content('Denver, CO')
   end
+
+  it 'does not show location on user show when cookie is not present' do
+    user = User.create(name: "User One", email: "user@aol.com", password: 'password123')
+
+    visit login_path
+
+    fill_in :email, with: user.email
+    fill_in :password, with: user.password
+
+    click_button 'Login'
+
+    expect(current_path).to eq(user_path(user.id))
+    expect(page).to_not have_content('Denver, CO')
+  end
+
+  it 'can log out' do
+    user = User.create(name: "User One", email: "user@aol.com", password: 'password123')
+
+    visit login_path
+
+    fill_in :email, with: user.email
+    fill_in :password, with: user.password
+
+    click_button 'Login'
+
+    expect(current_path).to eq(user_path(user.id))
+
+    visit root_path
+    expect(page).to_not have_button('Login')
+
+    click_button 'Logout'
+
+    expect(current_path).to eq(root_path)
+    expect(page).to have_button('Login')
+  end
+
+  it 'doesnt allow user to view user show page if not logged in' do
+    user = User.create(name: "User One", email: "user@aol.com", password: 'password123')
+
+    visit user_path(user.id)
+
+    expect(current_path).to eq(root_path)
+    expect(page).to have_content('You must be logged in to view this page')
+  end
+
+  
 end
